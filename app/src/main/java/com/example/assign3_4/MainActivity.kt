@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
@@ -18,21 +16,26 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.assign3_4.ui.theme.Assign3_4Theme
+import kotlinx.coroutines.launch
 
-private const val TAG = "Assign3_4";
+private const val TAG = "Assign3_4"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Assign3_4Theme {
-                ScaffoldStructure()
+                ScaffoldStructure(inputName = "Kwab")
             }
         }
     }
@@ -40,7 +43,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldStructure() {
+fun ScaffoldStructure(inputName: String = "Android") {
+    val snackbarHostState = SnackbarHostState()
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         // holds page title
         topBar = {
@@ -53,50 +59,53 @@ fun ScaffoldStructure() {
                 }
             )
         },
-        // for navigation section
+        // for navigation section at bottom
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ) {
                 // bottom bar content
                 Button(
-                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Left") },
+                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Home") },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Left")
+                    Text("Home")
                 }
                 Button(
-                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Center") },
-                    modifier = Modifier.weight(1f)
+                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Profile") },
+                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp) // added padding on middle one to space all of the buttons out
                 ) {
-                    Text("Center")
+                    Text("Profile")
                 }
                 Button(
-                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Right") },
+                    onClick = { Log.d(TAG, "Bottom Bar Clicked - Settings") },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Right")
+                    Text("Settings")
                 }
             }
         },
+        // like button floating on page that triggers snackbar
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { Log.d(TAG, "Floating Action Button Clicked") },
+                onClick = { scope.launch{snackbarHostState.showSnackbar("Feedback received!", actionLabel = "Dismiss") }},
                 containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = MaterialTheme.colorScheme.onSecondary
             ) {
                 Icon(
                     imageVector = Icons.Filled.ThumbUp,
-                    contentDescription = "Show Snackbar"
+                    contentDescription = "Like page"
                 )
             }
         },
+        // control fab position
         floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = {SnackbarHost(hostState = snackbarHostState)},
         // holds page title
         content = { innerPadding ->
             Greeting(
-                name = "Android",
+                name = inputName,
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -107,7 +116,7 @@ fun ScaffoldStructure() {
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 16.dp)
     )
 }
 
