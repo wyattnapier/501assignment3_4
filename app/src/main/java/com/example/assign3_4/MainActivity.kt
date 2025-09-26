@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -51,6 +52,11 @@ fun ScaffoldStructure(inputName: String = "Android") {
         // holds page title
         topBar = {
             TopAppBar(
+                // additional styling for top bar because it doesn't have a background
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer, // Background color of the TopAppBar.
+                    titleContentColor = MaterialTheme.colorScheme.primaryContainer // Color of the title text.
+                ),
                 title = {
                     Text(
                         "Assign3_4 - Scaffold",
@@ -116,7 +122,7 @@ fun ScaffoldStructure(inputName: String = "Android") {
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-        modifier = modifier.padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     )
 }
 
